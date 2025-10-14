@@ -1,0 +1,71 @@
+- name: Resource Group
+  azure_rm_resourcegroup:
+    name: "{{ resource_prefix }}"
+    location: "{{ rg_location }}"
+
+- name: Virtual Network
+  azure_rm_virtualnetwork:
+    resource_group: "{{ resource_prefix }}"
+    name: "{{ resource_prefix }}_vnet"
+    address_prefixes: "10.0.0.0/16"
+
+- name: Subnet
+  azure_rm_subnet:
+    resource_group: "{{ resource_prefix }}"
+    name: "{{ resource_prefix }}_subnet"
+    address_prefix: "10.0.1.0/24"
+    virtual_network: "{{ resource_prefix }}_vnet"
+
+- name: Public IP
+  azure_rm_publicipaddress:
+    resource_group: "{{ resource_prefix }}"
+    allocation_method: Static
+    name: "{{ resource_prefix }}_pubipaddress"
+  register: output_ip_address
+
+- name: Log Public IP Address
+  debug:
+    msg: "! {{ output_ip_address.state.ip_address }}"
+
+- name: Network Security Group
+  azure_rm_securitygroup:
+    resource_group: "{{ resource_prefix }}"
+    name: "{{ resource_prefix }}_securitygroup"
+    rules:
+      - name: SSH
+        protocol: TCP
+        destination_port_range: 22
+        access: Allow
+        priority: 1001
+        direction: Inbound
+
+- name: Virtual NIC
+  azure_rm_networkinterface:
+    resource_group: "{{ resource_prefix }}"
+    name: "{{ resource_prefix }}_vm1_nic"
+    virtual_network: "{{ resource_prefix }}_vnet"
+    subnet: "{{ resource_prefix }}_subnet"
+    ip_configurations:
+      - name: "{{ resource_prefix }}_vm1_nic_ipconfig1"
+        primary: True
+        public_ip_address_name: "{{ resource_prefix }}_pubipaddress" 
+    security_group: "{{ resource_prefix }}_securitygroup"
+
+- name: Virtual Machine
+  azure_rm_virtualmachine:
+    api_profile: latest
+    resource_group: "{{ resource_prefix }}"
+    name: "{{ resource_prefix }}vm1"
+    vm_size: "{{ vm_size }}"
+    admin_username: "{{ admin_username }}"
+    ssh_password_enabled: false
+    ssh_public_keys:
+      - path: "/home/{{ admin_username }}/.ssh/authorized_keys"
+        key_data: "{{ admin_pubkey }}"
+    network_interfaces: "{{ resource_prefix }}_vm1_nic"
+    managed_disk_type: "{{ disk_type }}"
+    image:
+      offer: ubuntu-24_04-lts
+      publisher: Canonical
+      sku: server
+      version: latest

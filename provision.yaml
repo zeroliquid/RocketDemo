@@ -1,0 +1,5 @@
+- name: Provision Resources
+  hosts: localhost
+  connection: local
+  roles:
+    - provision
