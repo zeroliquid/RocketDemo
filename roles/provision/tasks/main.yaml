@@ -21,6 +21,7 @@
     resource_group: "{{ resource_prefix }}"
     allocation_method: Static
     name: "{{ resource_prefix }}_pubipaddress"
+    domain_name: "{{ domain_prefix }}"
   register: output_ip_address
 
 - name: Log Public IP Address

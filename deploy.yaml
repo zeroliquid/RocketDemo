@@ -3,6 +3,7 @@
   roles:
     - init
     - rocketchat
+    - reverse_proxy
 
   vars:
     ansible_user: "{{ admin_username }}"

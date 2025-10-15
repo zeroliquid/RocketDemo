@@ -1,0 +1,22 @@
+- name: Install nginx and certbot
+  ansible.builtin.apt:
+    name:
+      - nginx
+      - certbot
+
+- name: default conf
+  ansible.builtin.template:
+    src: default
+    dest: /etc/nginx/sites-enabled/default
+  notify:
+    - Restart nginx
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: nginx service
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true
+
