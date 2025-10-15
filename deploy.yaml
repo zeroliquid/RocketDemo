@@ -1,0 +1,8 @@
+- name: Initial setup
+  hosts: all
+  roles:
+    - init
+    - rocketchat
+
+  vars:
+    ansible_user: "{{ admin_username }}"

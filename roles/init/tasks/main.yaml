@@ -1,0 +1,16 @@
+- name: Update APT cache
+  ansible.builtin.apt:
+    cache_valid_time: 86400
+
+- name: Install Docker packages
+  ansible.builtin.apt:
+    name:
+      - docker.io
+      - python3-docker
+      - docker-compose-v2
+
+- name: docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

@@ -24,8 +24,19 @@ Do **not** install Azure CLI into the same virtual environment, AzureRM has conf
 az login # For Local Deployments
 ```
 
-## Provision Infrastructure
+## Provision & Deploy
 1. **Provision Resources**
 ```
 ansible-playbook provision.yaml -v
+```
+
+2. **Deploy**
+```
+ansible-playbook deploy.yaml -v
+```
+
+## Clean Up The Resources
+(!) Force deletes non-empty resource group.
+```
+ansible-playbook cleanup.yaml
 ```

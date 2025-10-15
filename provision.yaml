@@ -1,5 +1,6 @@
 - name: Provision Resources
   hosts: localhost
   connection: local
+  become: false
   roles:
     - provision

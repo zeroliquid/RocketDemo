@@ -1,0 +1,13 @@
+- name: Clean Up Resources
+  hosts: localhost
+  connection: local
+  become: false
+  tasks:
+    - name: Deleting resource group - "{{ resource_prefix }}"
+      azure_rm_resourcegroup:
+        name: "{{ resource_prefix }}"
+        state: absent
+        force_delete_nonempty: true # !!!!!!
+      register: rg
+    - debug:
+        var: rg
