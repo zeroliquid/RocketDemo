@@ -8,11 +8,11 @@
   ansible.builtin.template:
     src: .env.j2
     dest: /opt/rocketchat/.env
-  # notify: Restart RocketChat
+  notify: Restart RocketChat
 
 - name: RocketChat Compose Up
-  when: false
   community.docker.docker_compose_v2:
     project_src: /opt/rocketchat/
     files:
+      - compose.database.yml
       - compose.yml

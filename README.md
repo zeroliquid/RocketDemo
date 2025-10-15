@@ -21,7 +21,7 @@ Do **not** install Azure CLI into the same virtual environment, AzureRM has conf
 
 2. **Authenticate to Azure**
 ```
-az login # For Local Deployments
+az login # For Dev Deployments
 ```
 
 ## Provision & Deploy

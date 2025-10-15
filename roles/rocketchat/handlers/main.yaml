@@ -2,5 +2,6 @@
   community.docker.docker_compose_v2:
     project_src: /opt/rocketchat/
     files:
+      - compose.database.yml
       - compose.yml
     state: restarted
