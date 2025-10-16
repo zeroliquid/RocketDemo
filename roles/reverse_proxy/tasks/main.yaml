@@ -1,8 +1,6 @@
-- name: Install nginx and certbot
+- name: Install nginx
   ansible.builtin.apt:
-    name:
-      - nginx
-      - certbot
+    name: nginx
 
 - name: default conf
   ansible.builtin.template:

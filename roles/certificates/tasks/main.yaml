@@ -1,0 +1,6 @@
+# TODO! HTTP-01 Let's Encrypt ACME via acme.sh
+
+- name: Self Signed Certificate
+  ansible.builtin.include_tasks:
+    file: self_signed.yml
+  when: selfsigned

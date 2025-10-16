@@ -15,4 +15,5 @@
     project_src: /opt/rocketchat/
     files:
       - compose.database.yml
+      - compose.monitoring.yml
       - compose.yml

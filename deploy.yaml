@@ -3,7 +3,9 @@
   roles:
     - init
     - rocketchat
+    - certificates
     - reverse_proxy
 
   vars:
     ansible_user: "{{ admin_username }}"
+    selfsigned: true

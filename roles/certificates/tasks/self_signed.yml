@@ -1,0 +1,9 @@
+- name: Create private key
+  community.crypto.openssl_privatekey:
+    path: "/etc/ssl/private/{{ public_dns_hostnames | first }}.pem"
+
+- name: Create a self-signed Certificate
+  community.crypto.x509_certificate:
+    path: "/etc/ssl/certs/{{ public_dns_hostnames | first }}}.crt"
+    privatekey_path: "/etc/ssl/private/{{ public_dns_hostnames | first }}.pem"
+    provider: selfsigned

@@ -2,6 +2,10 @@
   ansible.builtin.apt:
     cache_valid_time: 86400
 
+- name: Install ca-certificates
+  ansible.builtin.apt:
+    name: ca-certificates
+
 - name: Install Docker packages
   ansible.builtin.apt:
     name:
