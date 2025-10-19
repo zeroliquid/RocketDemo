@@ -1,26 +1,29 @@
-name: Provision Infrastructure
+name: Deploy RocketChat
 trigger: none
 
 steps:
+  - task: InstallSSHKey@0
+    displayName: Install SSH Keys
+    inputs:
+      sshKeySecureFile: id_agentkey
+
   - task: CmdLine@2
     displayName: Group Vars Environment Substitution
     inputs:
       script: |
-        touch empty.cfg
         envsubst < ./group_vars/all.yaml.tmpl > ./group_vars/all.yaml
     env:
-      ADMIN_PUBKEY: $(id_agentkey.pub)
-      RESOURCE_PREFIX: $(resourcePrefix)
-      DOMAIN_PREFIX: $(domainPrefix)
+      ROCKETCHAT_REGTOKEN: $(rocketchatRegToken)
+      GRAFANA_PASSWORD: $(grafanaPassword)
         
   - task: CmdLine@2
-    displayName: Provision
+    displayName: Deploy
     inputs: # Fedora Ansible EE doesn't work in a container job
       script: | # DinD Agent setup, so no bind mounts
         CONTAINER_ID=$(docker create \
-          -e ANSIBLE_CONFIG='empty.cfg' -e AZURE_SUBSCRIPTION_ID=$(AZURE_SUBSCRIPTION_ID) \
+          -e ANSIBLE_CONFIG='pipelines/deploy.cfg' -e AZURE_SUBSCRIPTION_ID=$(AZURE_SUBSCRIPTION_ID) \
           -e AZURE_CLIENT_ID=$(AZURE_CLIENT_ID) -e AZURE_SECRET=$(AZURE_SECRET) -e AZURE_TENANT=$(AZURE_TENANT) \
-          $(containerImageName) ansible-playbook provision.yaml -v --diff)
+          $(containerImageName) ansible-playbook deploy.yaml -v --diff)
         docker cp "$(Build.SourcesDirectory)/." "$CONTAINER_ID":/runner
         docker start -ai "$CONTAINER_ID"
         docker rm "$CONTAINER_ID"
