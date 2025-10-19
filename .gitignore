@@ -1,3 +1,7 @@
 .venv*/
 .python-version
 *.ignore*
+.vault_password.sh
+ansible-navigator.log
+*-artifact*
+.env

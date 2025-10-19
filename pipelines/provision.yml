@@ -1,0 +1,22 @@
+name: Provision Infrastructure
+trigger: none
+
+resources:
+  containers:
+    - container: ansible_container
+      image: $(containerImageName)
+      endpoint: $(containerRegistry)
+
+container: ansible_container
+
+steps:
+  - task: CmdLine@2
+    displayName: Provision
+    inputs:
+      script: |
+        ansible-playbook provision.yaml -v
+      env:
+        AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+        AZURE_SECRET: $(AZURE_SECRET)
+        AZURE_TENANT: $(AZURE_TENANT)
