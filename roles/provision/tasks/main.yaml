@@ -32,7 +32,7 @@
   azure_rm_securitygroup:
     resource_group: "{{ resource_prefix }}"
     name: "{{ resource_prefix }}_securitygroup"
-    rules: # TODO! Dest~~
+    rules:
       - name: SSH
         protocol: TCP
         destination_port_range: 22
@@ -45,12 +45,6 @@
         access: Allow
         priority: 1002
         direction: Inbound
-#      - name: HTTP
-#        protocol: TCP
-#        destination_port_range: 80
-#        access: Allow
-#        priority: 1003
-#        direction: Inbound
 
 - name: Virtual NIC
   azure_rm_networkinterface:

@@ -27,7 +27,6 @@ steps:
     displayName: Deploy
     inputs: # Fedora Ansible EE doesn't work in a container job
       script: | # DinD Agent setup, so no bind mounts
-        ls -la
         CONTAINER_ID=$(docker create \
           -e ANSIBLE_CONFIG='pipelines/deploy.cfg' -e AZURE_SUBSCRIPTION_ID=$(AZURE_SUBSCRIPTION_ID) \
           -e AZURE_CLIENT_ID=$(AZURE_CLIENT_ID) -e AZURE_SECRET=$(AZURE_SECRET) -e AZURE_TENANT=$(AZURE_TENANT) \
