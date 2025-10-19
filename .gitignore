@@ -7,3 +7,5 @@ ansible-navigator.log
 .env
 .ansible/
 empty.cfg
+context/
+group_vars/all.yaml

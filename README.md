@@ -2,41 +2,53 @@
 Automatic deployment of RocketChat 7.10 demo instance to Azure.
 
 ## Setting up the deployment environment
-1. **Install Ansible with AzureRM and Azure CLI**
-- *(Installing Ansible via Python Virtual Environment)*
+### Deploy Environment Setup (1)
+1\. Install Ansible, AzureRM Collection and Azure CLI\
+!!!! May disrupt your local environment.
 ```
-pyenv local 3.12.12 # Pyenv example
-pyenv exec python -m venv .venv
-
 python -m venv .venv # System python
-
 source .venv/bin/activate
 
 python -m pip install ansible
 ansible-galaxy collection install azure.azcollection --force
 python -m pip install -r ~/.ansible/collections/ansible_collections/azure/azcollection/requirements.txt
+
+az login # Authenticate via CLI
+```
+Do **not** install Azure CLI into the same virtual environment, AzureRM has conflicting packages. 
+
+2\. Create `group_vars/all.yaml`\
+3\. Change `ansible.cfg`
+
+### Deploy Environment Setup (2)
+1\. Install ansible, ansible-builder, ansible-navigator and Docker\
+2\. Create `.env` file (`.env.example`)\
+3\. `make build`\
+4\. Make sure your ssh-agent is running and has the private key
+```
+eval `ssh-agent -s`
+ssh-add ~/.ssh/id_azurevm
 ```
 
-Do **not** install Azure CLI into the same virtual environment, AzureRM has conflicting packages.
+## Usage
+**1. Provision Resources**
 
-2. **Authenticate to Azure**
-```
-az login # For Dev Deployments
-```
+1\) `ansible-playbook provision.yaml -v --diff`
 
-## Provision & Deploy
-1. **Provision Resources**
-```
-ansible-playbook provision.yaml -v
-```
+2\) `make provision`
 
-2. **Deploy**
-```
-ansible-playbook deploy.yaml -v
-```
+**2. Deploy**
 
-## Clean Up The Resources
+1\) `ansible-playbook deploy.yaml -v --diff`
+
+2\) `make deploy`
+
+**3. Clean Up The Resources**
+
+1\) `ansible-playbook cleanup.yaml -v --diff`
+
+2\) `make cleanup`
+
 (!) Force deletes non-empty resource group.
-```
-ansible-playbook cleanup.yaml
-```
+
+
