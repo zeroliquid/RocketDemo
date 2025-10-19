@@ -8,14 +8,17 @@ dependencies:
   python_interpreter:
     package_system: python3
   ansible_core:
-    package_pip: ansible-core
+    package_pip: ansible-core==2.19.3
   ansible_runner:
-    package_pip: ansible-runner
+    package_pip: ansible-runner==2.4.2
   system:
   - openssh-clients
   - sshpass
   galaxy:
     collections:
     - name: azure.azcollection
+      version: 3.9.0
     - name: community.docker
+      version: 4.8.1
     - name: community.crypto
+      version: 3.0.4
