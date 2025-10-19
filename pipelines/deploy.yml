@@ -2,10 +2,10 @@ name: Deploy RocketChat
 trigger: none
 
 steps:
-  - task: InstallSSHKey@0
-    displayName: Install SSH Keys
+  - task: DownloadSecureFile@1
+    displayName: Get SSH Private Key
     inputs:
-      sshKeySecureFile: id_agentkey
+      secureFile: id_agentkey
 
   - task: CmdLine@2
     displayName: Group Vars Environment Substitution
