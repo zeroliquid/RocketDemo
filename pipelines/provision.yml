@@ -1,21 +1,9 @@
 name: Provision Infrastructure
 trigger: none
 
-parameters:
-  - name: containerRegistry
-    type: string
-
-resources:
-  containers:
-    - container: ansible_container
-      image: $(containerImageName)
-      endpoint: ${{ parameters.containerRegistry }}
-
-container: ansible_container
-
 steps:
   - task: CmdLine@2
-    displayName: Environment Substitution
+    displayName: Group Vars Environment Substitution
     inputs:
       script: |
         touch empty.cfg
@@ -28,10 +16,13 @@ steps:
     displayName: Provision
     inputs:
       script: |
-        ansible-playbook provision.yaml -v
-    env:
-      ANSIBLE_CONFIG: empty.cfg
-      AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-      AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-      AZURE_SECRET: $(AZURE_SECRET)
-      AZURE_TENANT: $(AZURE_TENANT)
+        set -x
+        echo $(pwd)
+        ls -la $(Build.SourcesDirectory)
+        CONTAINER_ID=$(docker create \
+          -e ANSIBLE_CONFIG='empty.cfg' -e AZURE_SUBSCRIPTION_ID=$(AZURE_SUBSCRIPTION_ID) \
+          -e AZURE_CLIENT_ID=$(AZURE_CLIENT_ID) -e AZURE_SECRET=$(AZURE_SECRET) -e AZURE_TENANT=$(AZURE_TENANT) \
+          $(containerImageName) ansible-playbook provision.yaml --diff)
+        docker cp "$(Build.SourcesDirectory)/." "$CONTAINER_ID":/runner
+        docker start -ai "$CONTAINER_ID"
+        docker rm "$CONTAINER_ID"
