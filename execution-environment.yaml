@@ -2,7 +2,7 @@ version: 3
 
 images:
   base_image:
-    name: registry.fedoraproject.org/fedora:42
+    name: registry.access.redhat.com/ubi8/ubi:latest
 
 dependencies:
   python_interpreter:
@@ -17,3 +17,8 @@ dependencies:
   galaxy:
     collections:
     - name: azure.azcollection
+
+options:
+  container_init:
+    entrypoint: ''
+    cmd: '["sleep", "infinity"]'
