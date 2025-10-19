@@ -17,3 +17,5 @@ dependencies:
   galaxy:
     collections:
     - name: azure.azcollection
+    - name: community.docker
+    - name: community.crypto

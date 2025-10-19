@@ -4,8 +4,15 @@ trigger: none
 steps:
   - task: DownloadSecureFile@1
     displayName: Get SSH Private Key
+    name: sshKey
     inputs:
       secureFile: id_agentkey
+
+  - task: CmdLine@2
+    displayName: Move SSH Key
+    inputs:
+      script: |
+        mv $(sshKey.secureFilePath) "$(Build.SourcesDirectory)/id_agentkey"
 
   - task: CmdLine@2
     displayName: Group Vars Environment Substitution
@@ -20,10 +27,13 @@ steps:
     displayName: Deploy
     inputs: # Fedora Ansible EE doesn't work in a container job
       script: | # DinD Agent setup, so no bind mounts
+        ls -la
         CONTAINER_ID=$(docker create \
           -e ANSIBLE_CONFIG='pipelines/deploy.cfg' -e AZURE_SUBSCRIPTION_ID=$(AZURE_SUBSCRIPTION_ID) \
           -e AZURE_CLIENT_ID=$(AZURE_CLIENT_ID) -e AZURE_SECRET=$(AZURE_SECRET) -e AZURE_TENANT=$(AZURE_TENANT) \
           $(containerImageName) ansible-playbook deploy.yaml -v --diff)
         docker cp "$(Build.SourcesDirectory)/." "$CONTAINER_ID":/runner
         docker start -ai "$CONTAINER_ID"
+        EXIT_CODE=$(docker inspect "$CONTAINER_ID" --format='{{.State.ExitCode}}')
         docker rm "$CONTAINER_ID"
+        exit $EXIT_CODE
