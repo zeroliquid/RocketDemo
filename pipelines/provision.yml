@@ -1,22 +1,37 @@
 name: Provision Infrastructure
 trigger: none
 
+parameters:
+  - name: containerRegistry
+    type: string
+
 resources:
   containers:
     - container: ansible_container
       image: $(containerImageName)
-      endpoint: $(containerRegistry)
+      endpoint: ${{ parameters.containerRegistry }}
 
 container: ansible_container
 
 steps:
   - task: CmdLine@2
+    displayName: Environment Substitution
+    inputs:
+      script: |
+        touch empty.cfg
+        envsubst < ./group_vars/all.yaml.tmpl > ./group_vars/all.yaml
+    env:
+      ADMIN_PUBKEY: $(id_agentkey.pub)
+      RESOURCE_PREFIX: $(resourcePrefix)
+        
+  - task: CmdLine@2
     displayName: Provision
     inputs:
       script: |
         ansible-playbook provision.yaml -v
-      env:
-        AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
-        AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
-        AZURE_SECRET: $(AZURE_SECRET)
-        AZURE_TENANT: $(AZURE_TENANT)
+    env:
+      ANSIBLE_CONFIG: empty.cfg
+      AZURE_SUBSCRIPTION_ID: $(AZURE_SUBSCRIPTION_ID)
+      AZURE_CLIENT_ID: $(AZURE_CLIENT_ID)
+      AZURE_SECRET: $(AZURE_SECRET)
+      AZURE_TENANT: $(AZURE_TENANT)

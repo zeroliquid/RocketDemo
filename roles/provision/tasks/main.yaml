@@ -39,13 +39,13 @@
         access: Allow
         priority: 1001
         direction: Inbound
-      - name: HTTPS 
+      - name: HTTPS
         protocol: TCP
         destination_port_range: 443
         access: Allow
         priority: 1002
         direction: Inbound
-#      - name: HTTP 
+#      - name: HTTP
 #        protocol: TCP
 #        destination_port_range: 80
 #        access: Allow
@@ -60,8 +60,8 @@
     subnet: "{{ resource_prefix }}_subnet"
     ip_configurations:
       - name: "{{ resource_prefix }}_vm1_nic_ipconfig1"
-        primary: True
-        public_ip_address_name: "{{ resource_prefix }}_pubipaddress" 
+        primary: true
+        public_ip_address_name: "{{ resource_prefix }}_pubipaddress"
     security_group: "{{ resource_prefix }}_securitygroup"
 
 - name: Virtual Machine
